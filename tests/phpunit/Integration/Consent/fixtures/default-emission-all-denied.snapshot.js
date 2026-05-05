@@ -17,7 +17,23 @@
 		}
 		window.gtmkit = window.gtmkit || {};
 		window.gtmkit.consent = {
+			state: {
+				'ad_personalization': 'denied',
+				'ad_storage': 'denied',
+				'ad_user_data': 'denied',
+				'analytics_storage': 'denied',
+				'personalization_storage': 'denied',
+				'functionality_storage': 'denied',
+				'security_storage': 'denied'
+			},
 			update: function (state) {
+				if (state && typeof state === 'object') {
+					for (var k in state) {
+						if (Object.prototype.hasOwnProperty.call(state, k)) {
+							window.gtmkit.consent.state[k] = state[k];
+						}
+					}
+				}
 				if (typeof gtag !== 'undefined') {
 					gtag('consent', 'update', state);
 				}

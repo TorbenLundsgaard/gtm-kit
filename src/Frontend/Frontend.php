@@ -8,6 +8,7 @@
 namespace TLA_Media\GTM_Kit\Frontend;
 
 use TLA_Media\GTM_Kit\Options\Options;
+use TLA_Media\GTM_Kit\Options\OptionSchema;
 
 /**
  * Frontend
@@ -186,8 +187,10 @@ final class Frontend {
 
 		// Build the inner body of gtag('consent', 'default', { ... }) so the
 		// conditional wait_for_update and region fields don't leak template
-		// whitespace into the rendered script.
-		$consent_lines = [];
+		// whitespace into the rendered script. Also build a categories-only
+		// body for the window.gtmkit.consent.state surface, which holds the
+		// seven Consent Mode v2 categories and nothing else.
+		$category_lines = [];
 		foreach (
 			[
 				'ad_personalization',
@@ -199,12 +202,15 @@ final class Frontend {
 				'security_storage',
 			] as $category
 		) {
-			$consent_lines[] = sprintf(
+			$category_lines[] = sprintf(
 				"'%s': '%s'",
 				$category,
 				esc_js( (string) ( $consent_defaults[ $category ] ?? 'denied' ) )
 			);
 		}
+		$consent_state_body = implode( ",\n\t\t\t\t", $category_lines );
+
+		$consent_lines = $category_lines;
 		if ( $wait_for_update > 0 ) {
 			$consent_lines[] = "'wait_for_update': " . $wait_for_update;
 		}
@@ -235,7 +241,21 @@ final class Frontend {
 		}
 		window.gtmkit = window.gtmkit || {};
 		window.gtmkit.consent = {
+			state: {
+				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $consent_state_body is built above from hardcoded category keys and esc_js()-escaped 'granted'/'denied' literals only (no region/wait_for_update). Re-escaping would corrupt the embedded quotes.
+				echo $consent_state_body;
+				?>
+
+			},
 			update: function (state) {
+				if (state && typeof state === 'object') {
+					for (var k in state) {
+						if (Object.prototype.hasOwnProperty.call(state, k)) {
+							window.gtmkit.consent.state[k] = state[k];
+						}
+					}
+				}
 				if (typeof gtag !== 'undefined') {
 					gtag('consent', 'update', state);
 				}
@@ -321,6 +341,60 @@ final class Frontend {
 		wp_register_script( 'gtmkit-container', '', [ 'gtmkit' ], GTMKIT_VERSION, [ 'in_footer' => false ] );
 		wp_enqueue_script( 'gtmkit-container' );
 		wp_add_inline_script( 'gtmkit-container', $script );
+
+		$this->maybe_enqueue_consent_gating_shim();
+	}
+
+	/**
+	 * Enqueue the consent-gating shim when the gating mode is strong_block.
+	 *
+	 * The shim is a small vanilla-JS file that listens for
+	 * `gtmkit:consent:updated` and re-injects the masked GTM container as
+	 * text/javascript once the required consent categories are granted.
+	 * Loaded in <head> after gtmkit-container so the masked <script> element
+	 * is in the DOM by the time the shim runs its initial check.
+	 */
+	private function maybe_enqueue_consent_gating_shim(): void {
+		if ( $this->options->get( 'general', 'consent_gating_mode' ) !== OptionSchema::GATING_MODE_STRONG_BLOCK ) {
+			return;
+		}
+
+		/**
+		 * Consent categories that must be `granted` before the strong-block
+		 * shim will unmask the GTM container. Default: analytics_storage and
+		 * ad_storage, the two categories most GTM containers depend on.
+		 *
+		 * @param array<int, string> $required_categories Consent Mode v2 category names.
+		 */
+		$required_categories = apply_filters(
+			'gtmkit_strong_block_required_categories',
+			[ 'analytics_storage', 'ad_storage' ]
+		);
+		if ( ! is_array( $required_categories ) ) {
+			$required_categories = [ 'analytics_storage', 'ad_storage' ];
+		}
+		$required_categories = array_values( array_filter( $required_categories, 'is_string' ) );
+
+		wp_register_script(
+			'gtmkit-consent-gating',
+			GTMKIT_URL . 'assets/frontend/consent-gating.js',
+			[ 'gtmkit-container' ],
+			GTMKIT_VERSION,
+			[ 'in_footer' => false ]
+		);
+		wp_localize_script(
+			'gtmkit-consent-gating',
+			'gtmkitConsentGating',
+			[
+				'requiredCategories' => $required_categories,
+				// Used by the shim to scope its "GTM already booted" check
+				// to our specific container id, so unrelated globals
+				// (gtag.js for an Ads pixel, debug inspectors) cannot
+				// short-circuit the unmask path.
+				'containerId'        => (string) $this->options->get( 'general', 'gtm_id' ),
+			]
+		);
+		wp_enqueue_script( 'gtmkit-consent-gating' );
 	}
 
 	/**
@@ -396,6 +470,20 @@ final class Frontend {
 
 			foreach ( $script_attributes as $attribute_name => $value ) {
 				$attributes[ $attribute_name ] = $value;
+			}
+
+			// Strong-block: mask the GTM container script so the browser
+			// will not execute it until the consent-gating shim re-injects
+			// it as text/javascript. CMP attributes from
+			// gtmkit_header_script_attributes stay on the masked script
+			// (they are inert while type=text/plain) so a CMP that
+			// recognises them can also unblock.
+			if (
+				strpos( $attributes['id'], 'gtmkit-container' ) === 0
+				&& $this->options->get( 'general', 'consent_gating_mode' ) === OptionSchema::GATING_MODE_STRONG_BLOCK
+			) {
+				$attributes['type']              = 'text/plain';
+				$attributes['data-gtmkit-gated'] = '1';
 			}
 		}
 

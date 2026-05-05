@@ -92,11 +92,13 @@ final class BackwardCompatTest extends WP_UnitTestCase {
 
 		$this->assertSnapshot( 'default-emission-all-denied.snapshot.js', $inline );
 
-		// Structural asserts that make a hash mismatch readable.
+		// Structural asserts that make a snapshot mismatch readable.
 		$this->assertStringContainsString( "gtag('consent', 'default'", $inline );
 		$this->assertStringContainsString( "'ad_personalization': 'denied'", $inline );
 		$this->assertStringContainsString( "'security_storage': 'denied'", $inline );
-		$this->assertSame( 7, substr_count( $inline, "'denied'" ) );
+		// 7 categories rendered twice — once in the gtag default block,
+		// once in the window.gtmkit.consent.state surface.
+		$this->assertSame( 14, substr_count( $inline, "'denied'" ) );
 		$this->assertSame( 0, substr_count( $inline, "'granted'" ) );
 
 		// Negative regression: no leakage of registry/gate internals into the rendered output.
