@@ -90,7 +90,10 @@ final class ConsentDefaultsTest extends WP_UnitTestCase {
 
 		$inline = $this->extract_inline_script();
 		$this->assertStringContainsString( "gtag('consent', 'default'", $inline, 'Consent-default gtag() call is missing.' );
-		$this->assertSame( 7, substr_count( $inline, "'denied'" ), 'All seven consent categories must default to denied.' );
+		// Each category is rendered twice — once inside `gtag('consent', 'default', ...)`
+		// and once inside the `window.gtmkit.consent.state` surface — so the
+		// expected count is 7 categories × 2 emissions = 14.
+		$this->assertSame( 14, substr_count( $inline, "'denied'" ), 'All seven consent categories must default to denied (twice, in the gtag block and the state surface).' );
 		$this->assertSame( 0, substr_count( $inline, "'granted'" ), 'No category may default to granted in the denied-by-default baseline.' );
 	}
 
@@ -111,7 +114,9 @@ final class ConsentDefaultsTest extends WP_UnitTestCase {
 
 		$inline = $this->extract_inline_script();
 		$this->assertStringContainsString( "gtag('consent', 'default'", $inline, 'Consent-default gtag() call is missing.' );
-		$this->assertSame( 7, substr_count( $inline, "'granted'" ), 'All seven consent categories must be granted when every flag is on.' );
+		// Each category is rendered twice — once inside the gtag default
+		// block and once inside the window.gtmkit.consent.state surface.
+		$this->assertSame( 14, substr_count( $inline, "'granted'" ), 'All seven consent categories must be granted when every flag is on (twice, in the gtag block and the state surface).' );
 		$this->assertSame( 0, substr_count( $inline, "'denied'" ), 'No category may emit denied when every flag is on.' );
 	}
 

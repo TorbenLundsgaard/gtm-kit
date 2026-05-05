@@ -42,6 +42,9 @@ final class OptionKeys {
 	public const GENERAL_GCM_WAIT_FOR_UPDATE         = 'general.gcm_wait_for_update';
 	public const GENERAL_GCM_REGION                  = 'general.gcm_region';
 
+	// Script gating.
+	public const GENERAL_CONSENT_GATING_MODE = 'general.consent_gating_mode';
+
 	// Integration Options.
 	public const INTEGRATIONS_WOOCOMMERCE_INTEGRATION               = 'integrations.woocommerce_integration';
 	public const INTEGRATIONS_WOOCOMMERCE_SHIPPING_INFO             = 'integrations.woocommerce_shipping_info';

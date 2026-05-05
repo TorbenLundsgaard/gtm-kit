@@ -17,6 +17,41 @@ use TLA_Media\GTM_Kit\Common\Util;
 final class OptionSchema {
 
 	/**
+	 * Script gating mode: GTM loads on every page (current behavior).
+	 *
+	 * @var string
+	 */
+	public const GATING_MODE_ALWAYS_LOAD = 'always_load';
+
+	/**
+	 * Script gating mode: GTM loads but starts in denied state via Consent Mode.
+	 * Same on-page emission as always_load; future event-deferral features may
+	 * change runtime behavior under this mode.
+	 *
+	 * @var string
+	 */
+	public const GATING_MODE_WEAK_BLOCK = 'weak_block';
+
+	/**
+	 * Script gating mode: GTM is masked as text/plain and only executes after
+	 * consent for the required categories has been granted.
+	 *
+	 * @var string
+	 */
+	public const GATING_MODE_STRONG_BLOCK = 'strong_block';
+
+	/**
+	 * All valid values for the script gating mode option, in canonical order.
+	 *
+	 * @var array<int, string>
+	 */
+	public const GATING_MODES = [
+		self::GATING_MODE_ALWAYS_LOAD,
+		self::GATING_MODE_WEAK_BLOCK,
+		self::GATING_MODE_STRONG_BLOCK,
+	];
+
+	/**
 	 * Get schema for all options
 	 *
 	 * @return array<string, array<string, mixed>>
@@ -157,6 +192,14 @@ final class OptionSchema {
 				'sanitize' => [ self::class, 'sanitize_region_codes' ],
 				'validate' => [ self::class, 'validate_region_codes' ],
 			],
+
+			// Script gating mode (always_load | weak_block | strong_block).
+			// Default 'always_load' preserves the pre-2.10 emission for every existing install.
+			'consent_gating_mode'         => [
+				'default'  => self::GATING_MODE_ALWAYS_LOAD,
+				'type'     => 'string',
+				'validate' => [ self::class, 'validate_enum', self::GATING_MODES ],
+			],
 		];
 	}
 
@@ -296,6 +339,17 @@ final class OptionSchema {
 	 */
 	public static function validate_in_range( $value, int $min, int $max ): bool {
 		return is_numeric( $value ) && $value >= $min && $value <= $max;
+	}
+
+	/**
+	 * Validate value is one of an allowed set.
+	 *
+	 * @param mixed         $value          Value to validate.
+	 * @param array<string> $allowed_values Allowed values for the option.
+	 * @return bool
+	 */
+	public static function validate_enum( $value, array $allowed_values ): bool {
+		return in_array( $value, $allowed_values, true );
 	}
 
 	/**

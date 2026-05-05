@@ -99,6 +99,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 = Unreleased =
 
 #### New:
+* New "Script gating" mode on the Consent settings page lets you choose between always loading GTM, letting it load under Consent Mode v2 control, or holding it back entirely until consent is granted. Default stays as "Always load" so existing installs see no change.
+* Strong-block mode masks the Google Tag Manager container until visitors consent. Works alongside any CMP and falls back gracefully when no consent signal arrives.
+* Power users can override which consent categories must be granted before strong-block mode unmasks GTM via the new `gtmkit_strong_block_required_categories` filter.
+* `window.gtmkit.consent.state` exposes the current consent state so partner scripts and integrators can inspect it without subscribing to events.
 * New developer hooks let CMP integrations and consent add-ons plug into GTM Kit's consent flow without forking the plugin — sites running Cookiebot, CookieYes, WP Consent API or in-house consent solutions can now feed their state straight into GTM Kit.
 * Server-side broadcast `gtmkit_consent_updated` so other plugins can react to consent state changes without polling.
 * Per-event `gtmkit_event_should_defer` filter so future deferral features can hold individual events back when consent is missing.
