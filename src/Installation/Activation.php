@@ -7,6 +7,7 @@
 
 namespace TLA_Media\GTM_Kit\Installation;
 
+use TLA_Media\GTM_Kit\Common\CMPDetection;
 use TLA_Media\GTM_Kit\Options\Options;
 use TLA_Media\GTM_Kit\Options\OptionSchema;
 
@@ -59,6 +60,15 @@ final class Activation {
 			foreach ( $settings as $key => $option ) {
 				$defaults[ $group ][ $key ] = $option['default'];
 			}
+		}
+
+		// Pre-select the matching CMP toggle on fresh installs so a site
+		// that already runs Cookiebot, Iubenda, or CookieYes gets the
+		// right script attribute from the first request. Upgrading
+		// installs are handled separately in Upgrade.
+		$detected = CMPDetection::detect_active_cmp();
+		if ( null !== $detected && isset( $defaults['general']['cmp_script_attributes'][ $detected ] ) ) {
+			$defaults['general']['cmp_script_attributes'][ $detected ] = true;
 		}
 
 		$this->options->set( $defaults, true );

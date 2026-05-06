@@ -99,6 +99,8 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 = Unreleased =
 
 #### New:
+* New "CMP script attributes" section on the Consent settings page lets you toggle Cookiebot, Iubenda, and CookieYes script-blocking attributes with one click and add a custom attribute for any other CMP — no PHP filters required.
+* Fresh installs auto-detect a known CMP plugin (Cookiebot, Iubenda, CookieYes) and pre-select the matching toggle so the right attribute is on from day one.
 * New "Script gating" mode on the Consent settings page lets you choose between always loading GTM, letting it load under Consent Mode v2 control, or holding it back entirely until consent is granted. Default stays as "Always load" so existing installs see no change.
 * Strong-block mode masks the Google Tag Manager container until visitors consent. Works alongside any CMP and falls back gracefully when no consent signal arrives.
 * Power users can override which consent categories must be granted before strong-block mode unmasks GTM via the new `gtmkit_strong_block_required_categories` filter.
@@ -109,6 +111,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 #### Bugfixes:
 * Eliminate "dependencies that are not registered: gtmkit-container" warnings logged by WordPress 6.9.1+ on sites that have GTM Kit's container active.
+
+#### Other:
+* The Cookiebot script attribute (`data-cookieconsent="ignore"`) is now configurable via Settings → Consent → CMP script attributes. Existing installs keep the attribute on by default to preserve current behavior; turn it off explicitly if you do not use Cookiebot.
 
 = 2.9.0 =
 

@@ -52,6 +52,35 @@ final class OptionSchema {
 	];
 
 	/**
+	 * Allowed-character class for the custom CMP attribute name. HTML5
+	 * permits a wider set, but real-world CMP-blocking attributes use
+	 * `data-*` patterns with this safe subset; staying restrictive avoids
+	 * escaping bugs.
+	 *
+	 * @var string
+	 */
+	public const CMP_CUSTOM_NAME_PATTERN = '/[^a-zA-Z0-9_-]/';
+
+	/**
+	 * Default value for the cmp_script_attributes option on fresh installs
+	 * with no detected CMP. Activation overrides for fresh installs where
+	 * a CMP plugin is detected; the upgrade routine overrides to keep
+	 * Cookiebot on for upgraders to preserve the previously hardcoded
+	 * behavior.
+	 *
+	 * @var array<string, mixed>
+	 */
+	public const CMP_SCRIPT_ATTRIBUTES_DEFAULT = [
+		'cookiebot' => false,
+		'iubenda'   => false,
+		'cookieyes' => false,
+		'custom'    => [
+			'name'  => '',
+			'value' => '',
+		],
+	];
+
+	/**
 	 * Get schema for all options
 	 *
 	 * @return array<string, array<string, mixed>>
@@ -199,6 +228,18 @@ final class OptionSchema {
 				'default'  => self::GATING_MODE_ALWAYS_LOAD,
 				'type'     => 'string',
 				'validate' => [ self::class, 'validate_enum', self::GATING_MODES ],
+			],
+
+			// CMP script attribute support.
+			// Default has all named-CMP toggles off and an empty custom slot.
+			// Activation pre-selects a detected CMP for fresh installs; the
+			// upgrade routine seeds Cookiebot=true for upgraders to preserve
+			// the previously hardcoded behavior.
+			'cmp_script_attributes'       => [
+				'default'  => self::CMP_SCRIPT_ATTRIBUTES_DEFAULT,
+				'type'     => 'array',
+				'sanitize' => [ self::class, 'sanitize_cmp_script_attributes' ],
+				'validate' => [ self::class, 'validate_cmp_script_attributes' ],
 			],
 		];
 	}
@@ -403,6 +444,52 @@ final class OptionSchema {
 	 * @return bool
 	 */
 	public static function validate_region_codes( $value ): bool {
+		return is_array( $value );
+	}
+
+	/**
+	 * Sanitize the cmp_script_attributes value to the canonical structure.
+	 *
+	 * Normalizes the toggles to bools, the custom slot to an array with
+	 * `name` and `value` strings, and strips disallowed characters from
+	 * the custom name so a malformed payload from the admin REST endpoint
+	 * cannot leak unsafe attributes into the rendered <script> tag.
+	 *
+	 * @param mixed $value Raw value from the request.
+	 * @return array<string, mixed>
+	 */
+	public static function sanitize_cmp_script_attributes( $value ): array {
+		$defaults = self::CMP_SCRIPT_ATTRIBUTES_DEFAULT;
+		if ( ! is_array( $value ) ) {
+			return $defaults;
+		}
+
+		$custom_input = isset( $value['custom'] ) && is_array( $value['custom'] ) ? $value['custom'] : [];
+		$custom_name  = isset( $custom_input['name'] ) ? (string) $custom_input['name'] : '';
+		$custom_name  = (string) preg_replace( self::CMP_CUSTOM_NAME_PATTERN, '', $custom_name );
+
+		return [
+			'cookiebot' => ! empty( $value['cookiebot'] ),
+			'iubenda'   => ! empty( $value['iubenda'] ),
+			'cookieyes' => ! empty( $value['cookieyes'] ),
+			'custom'    => [
+				'name'  => $custom_name,
+				'value' => isset( $custom_input['value'] ) ? (string) $custom_input['value'] : '',
+			],
+		];
+	}
+
+	/**
+	 * Validate the cmp_script_attributes value.
+	 *
+	 * Accepts any array; structure is normalized by
+	 * {@see self::sanitize_cmp_script_attributes()}. Rejects non-array
+	 * values so the save pipeline fails fast.
+	 *
+	 * @param mixed $value Value to validate.
+	 * @return bool
+	 */
+	public static function validate_cmp_script_attributes( $value ): bool {
 		return is_array( $value );
 	}
 }

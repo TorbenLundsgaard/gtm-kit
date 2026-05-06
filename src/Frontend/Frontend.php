@@ -459,14 +459,47 @@ final class Frontend {
 				return $attributes;
 			}
 
-			$script_attributes = apply_filters(
-				'gtmkit_header_script_attributes',
-				[
-					'data-cfasync'       => 'false',
-					'data-nowprocket'    => '',
-					'data-cookieconsent' => 'ignore',
-				]
-			);
+			// Always-on cache-plugin compatibility attributes. These are
+			// not consent-related and stay on regardless of CMP setup.
+			$built = [
+				'data-cfasync'    => 'false',
+				'data-nowprocket' => '',
+			];
+
+			// CMP attributes from the cmp_script_attributes setting. The
+			// setting is the source of truth for the named CMPs and the
+			// custom slot; the gtmkit_header_script_attributes filter
+			// below stays a third-party extension point and runs after
+			// this build, so user-land filters can still override or add
+			// attributes.
+			$cmp = $this->options->get( 'general', 'cmp_script_attributes' );
+			if ( ! is_array( $cmp ) ) {
+				$cmp = [];
+			}
+			if ( ! empty( $cmp['cookiebot'] ) ) {
+				$built['data-cookieconsent'] = 'ignore';
+			}
+			if ( ! empty( $cmp['iubenda'] ) ) {
+				$built['data-cmp-ab'] = '1';
+			}
+			if ( ! empty( $cmp['cookieyes'] ) ) {
+				$built['data-cookie-consent'] = 'ignore';
+			}
+			if ( ! empty( $cmp['custom']['name'] ) ) {
+				// The sanitiser already strips disallowed characters at
+				// save time. Re-strip here as a defence-in-depth guard
+				// for legacy or filter-injected values that bypassed it.
+				$custom_name = (string) preg_replace(
+					OptionSchema::CMP_CUSTOM_NAME_PATTERN,
+					'',
+					(string) $cmp['custom']['name']
+				);
+				if ( '' !== $custom_name ) {
+					$built[ $custom_name ] = isset( $cmp['custom']['value'] ) ? (string) $cmp['custom']['value'] : '';
+				}
+			}
+
+			$script_attributes = apply_filters( 'gtmkit_header_script_attributes', $built );
 
 			foreach ( $script_attributes as $attribute_name => $value ) {
 				$attributes[ $attribute_name ] = $value;
@@ -474,10 +507,9 @@ final class Frontend {
 
 			// Strong-block: mask the GTM container script so the browser
 			// will not execute it until the consent-gating shim re-injects
-			// it as text/javascript. CMP attributes from
-			// gtmkit_header_script_attributes stay on the masked script
-			// (they are inert while type=text/plain) so a CMP that
-			// recognises them can also unblock.
+			// it as text/javascript. CMP attributes from above stay on
+			// the masked script (they are inert while type=text/plain)
+			// so a CMP that recognises them can also unblock.
 			if (
 				strpos( $attributes['id'], 'gtmkit-container' ) === 0
 				&& $this->options->get( 'general', 'consent_gating_mode' ) === OptionSchema::GATING_MODE_STRONG_BLOCK

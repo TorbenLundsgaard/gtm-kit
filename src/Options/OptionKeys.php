@@ -45,6 +45,9 @@ final class OptionKeys {
 	// Script gating.
 	public const GENERAL_CONSENT_GATING_MODE = 'general.consent_gating_mode';
 
+	// CMP script attribute support.
+	public const GENERAL_CMP_SCRIPT_ATTRIBUTES = 'general.cmp_script_attributes';
+
 	// Integration Options.
 	public const INTEGRATIONS_WOOCOMMERCE_INTEGRATION               = 'integrations.woocommerce_integration';
 	public const INTEGRATIONS_WOOCOMMERCE_SHIPPING_INFO             = 'integrations.woocommerce_shipping_info';
