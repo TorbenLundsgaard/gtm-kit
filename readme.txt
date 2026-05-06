@@ -96,6 +96,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= Unreleased =
+
+#### New:
+* New `gtmkit_consent_admin_badges` filter lets add-ons (e.g. Premium's WP Consent API integration) push status banners onto the Consent settings page so users see immediately when a higher-priority consent source has taken over.
+
 = 2.10.0 =
 
 Release date: 2026-05-06

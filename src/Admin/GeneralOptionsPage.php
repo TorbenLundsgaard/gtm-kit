@@ -139,21 +139,61 @@ final class GeneralOptionsPage extends AbstractOptionsPage {
 			'gtmkit-' . $script_handle . '-script',
 			'gtmkitSettings',
 			[
-				'rootId'        => 'gtmkit-settings',
-				'currentPage'   => $page_slug,
-				'root'          => \esc_url_raw( rest_url() ),
-				'nonce'         => \wp_create_nonce( 'wp_rest' ),
-				'pluginUrl'     => GTMKIT_URL,
-				'isPremium'     => ( new PremiumConditional() )->is_met(),
-				'tutorials'     => $this->get_tutorials(),
-				'integrations'  => Integrations::get_integrations(),
-				'adminPageUrl'  => $this->util->get_admin_page_url(),
-				'settings'      => $this->options->get_all_raw(),
-				'site_data'     => $this->util->get_site_data( $this->options->get_all_raw() ),
-				'user_roles'    => $this->get_user_roles(),
-				'notifications' => $this->get_notifications(),
+				'rootId'             => 'gtmkit-settings',
+				'currentPage'        => $page_slug,
+				'root'               => \esc_url_raw( rest_url() ),
+				'nonce'              => \wp_create_nonce( 'wp_rest' ),
+				'pluginUrl'          => GTMKIT_URL,
+				'isPremium'          => ( new PremiumConditional() )->is_met(),
+				'tutorials'          => $this->get_tutorials(),
+				'integrations'       => Integrations::get_integrations(),
+				'adminPageUrl'       => $this->util->get_admin_page_url(),
+				'settings'           => $this->options->get_all_raw(),
+				'site_data'          => $this->util->get_site_data( $this->options->get_all_raw() ),
+				'user_roles'         => $this->get_user_roles(),
+				'notifications'      => $this->get_notifications(),
+				'consentAdminBadges' => $this->get_consent_admin_badges(),
 			]
 		);
+	}
+
+	/**
+	 * Resolve the admin status badges rendered above the Consent settings
+	 * page sections.
+	 *
+	 * Add-ons (e.g. the Premium WP Consent API integration) hook
+	 * `gtmkit_consent_admin_badges` to push entries shaped as
+	 * `[ 'id' => string, 'message' => string, 'severity' => 'info'|'warning'|'success'|'error' ]`.
+	 * The React app renders each entry as a Notice at the top of the
+	 * Consent page, so users see immediately when a higher-priority
+	 * consent source has taken over from the standard admin defaults.
+	 *
+	 * @return array<int, array<string, string>>
+	 */
+	private function get_consent_admin_badges(): array {
+		$badges = (array) apply_filters( 'gtmkit_consent_admin_badges', [] );
+
+		$normalised = [];
+		foreach ( $badges as $badge ) {
+			if ( ! is_array( $badge ) ) {
+				continue;
+			}
+			$id       = isset( $badge['id'] ) ? (string) $badge['id'] : '';
+			$message  = isset( $badge['message'] ) ? (string) $badge['message'] : '';
+			$severity = isset( $badge['severity'] ) && in_array( $badge['severity'], [ 'info', 'warning', 'success', 'error' ], true )
+				? (string) $badge['severity']
+				: 'info';
+			if ( '' === $id || '' === $message ) {
+				continue;
+			}
+			$normalised[] = [
+				'id'       => $id,
+				'message'  => $message,
+				'severity' => $severity,
+			];
+		}
+
+		return $normalised;
 	}
 
 	/**
