@@ -3,7 +3,7 @@ Contributors: tlamedia, torbenlundsgaard, gtmkit
 Donate link: https://github.com/tlamedia/gtm-kit
 Tags: google tag manager, gtm, woocommerce, analytics, ga4
 Tested up to: 7.0
-Stable tag: 2.9.0
+Stable tag: 2.10.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -96,7 +96,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= Unreleased =
+= 2.10.0 =
+
+Release date: 2026-05-06
+
+Find out about what's new in our [our release post](https://gtmkit.com/gtm-kit-2-10/).
 
 #### New:
 * New "CMP script attributes" section on the Consent settings page lets you toggle Cookiebot, Iubenda, and CookieYes script-blocking attributes with one click and add a custom attribute for any other CMP — no PHP filters required.
