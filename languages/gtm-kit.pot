@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: GTM Kit 2.8.4\n"
+"Project-Id-Version: GTM Kit 2.10.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gtm-kit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-23T06:12:31+00:00\n"
+"POT-Creation-Date: 2026-05-06T09:14:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: gtm-kit\n"
@@ -243,55 +243,55 @@ msgstr ""
 msgid "Only authenticated users can access endpoint."
 msgstr ""
 
-#: src/Common/Util.php:177
+#: src/Common/Util.php:178
 msgid "Server type:"
 msgstr ""
 
-#: src/Common/Util.php:182
+#: src/Common/Util.php:183
 msgid "PHP version number:"
 msgstr ""
 
-#: src/Common/Util.php:187
+#: src/Common/Util.php:188
 msgid "WordPress version number:"
 msgstr ""
 
-#: src/Common/Util.php:192
+#: src/Common/Util.php:193
 msgid "WordPress multisite:"
 msgstr ""
 
-#: src/Common/Util.php:193
+#: src/Common/Util.php:194
 #: assets/admin/767.js:1
 #: assets/admin/923.js:1
 msgid "Yes"
 msgstr ""
 
-#: src/Common/Util.php:193
+#: src/Common/Util.php:194
 #: assets/admin/767.js:1
 #: assets/admin/923.js:1
 msgid "No"
 msgstr ""
 
-#: src/Common/Util.php:197
+#: src/Common/Util.php:198
 msgid "Current theme:"
 msgstr ""
 
-#: src/Common/Util.php:202
+#: src/Common/Util.php:203
 msgid "Current site language:"
 msgstr ""
 
-#: src/Common/Util.php:207
+#: src/Common/Util.php:208
 msgid "Active plugins:"
 msgstr ""
 
-#: src/Common/Util.php:208
+#: src/Common/Util.php:209
 msgid "Plugin name and version of all active plugins"
 msgstr ""
 
-#: src/Common/Util.php:212
+#: src/Common/Util.php:213
 msgid "Anonymized GTM Kit settings:"
 msgstr ""
 
-#: src/Common/Util.php:213
+#: src/Common/Util.php:214
 msgid "Which GTM Kit settings are active"
 msgstr ""
 
@@ -873,7 +873,7 @@ msgstr ""
 
 #: assets/admin/389.js:1
 #: assets/admin/508.js:1
-#: assets/admin/551.js:1
+#: assets/admin/883.js:3
 msgid "Warning!"
 msgstr ""
 
@@ -1276,127 +1276,6 @@ msgstr ""
 
 #: assets/admin/508.js:1
 msgid "The preferred method to implement the <noscript> container code is just after the opening <body> tag. This requires that your theme uses the \"body_open\" hook. If your theme does not support this the script can be injected in the footer or you can use the function below."
-msgstr ""
-
-#: assets/admin/551.js:1
-#: assets/admin/settings.js:1
-msgid "Google Consent Mode"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Google Consent Mode Activation"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Most Consent Management Platforms will handle the Google Consent Mode settings for you and applying the default settings in both GTM Kit and you CMP will lead to unexpected behaviour or errors."
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "You should only use these settings if you do not have a Consent Management Platform that supports Google Consent Mode."
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "GTM Kit will only set the default Consent Mode settings and you must update the settings yourself when the user has given consent."
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "See an example of how consent is updated"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Activate GCM settings"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Choose this option if you would like to activate the default settings below"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Google Consent Mode Default Settings"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Ad Personalization"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enables personalized advertising"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Ad Storage"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enables storage, such as cookies, related to advertising"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Ad User Data"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enables sending user data related to advertising to Google"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Analytics Storage"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enables storage, such as cookies, related to analytics (for example, visit duration)"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Functionality Storage"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enables storage that supports the functionality of the website or app such as language settings"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Personalization Storage"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enables storage related to personalization such as video recommendations"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Security Storage"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enables storage related to security such as authentication functionality, fraud prevention, and other user protection"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Advanced"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Redact Ads Data"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Redact advertising data"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Pass through URL parameters"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Pass through ad click, client ID, and session ID information in URLs"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Wait For Update"
-msgstr ""
-
-#: assets/admin/551.js:1
-msgid "Enter time in milliseconds"
 msgstr ""
 
 #: assets/admin/563.js:1
@@ -1813,6 +1692,212 @@ msgstr ""
 
 #: assets/admin/809.js:1
 msgid "Go to the dashboard"
+msgstr ""
+
+#. translators: %s is an HTML attribute string rendered in monospace.
+#: assets/admin/883.js:3
+msgid "Adds %s to GTM Kit scripts."
+msgstr ""
+
+#: assets/admin/883.js:3
+#: assets/admin/settings.js:1
+msgid "Google Consent Mode"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Script gating"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Choose whether GTM Kit loads the Google Tag Manager container unconditionally, lets it load but hands consent to Consent Mode v2, or holds the container script back until consent is granted."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Gating mode"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Always load (default)"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Weak block (Consent Mode)"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Strong block"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "GTM loads on every page. Use this if your CMP handles consent through Consent Mode tags or attributes, or if you do not yet have a CMP."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "GTM loads but starts in denied state via Consent Mode. Tags inside GTM that respect Consent Mode (most do) will not fire until consent is granted. Recommended when using a CMP that publishes consent state to the data layer or to WP Consent API."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "GTM does not execute until consent is granted. Strongest privacy posture. Use this if you want a guarantee that no tracking fires before consent. Some tag features that depend on early loading (auto-event listeners, scroll tracking from page-load time) will be limited."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Strong-block mode requires a consent signal to load GTM. With the master toggle off, GTM Kit emits no consent code itself; you must ensure your CMP or custom code fires the gtmkit:consent:updated event when consent is granted, otherwise GTM will not load."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "CMP script attributes"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "If your consent platform blocks scripts via HTML attributes, enable the matching option below. GTM Kit will add the attribute to its inline scripts so your CMP recognizes them."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Custom attribute"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Use this to add an attribute that is not in the list above. Names accept letters, digits, underscore, and dash; everything else is stripped on save. Leave the name empty to omit the attribute."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Name"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Value"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Resulting script tag attributes"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Google Consent Mode Activation"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Many consent management platforms (Cookiebot, Complianz, CookieYes, Cookie Information, etc.) handle Google Consent Mode themselves — either via their own client script or via tags inside your GTM container. If your CMP already does this, leave this setting off. Turning it on alongside a CMP that also emits gtag('consent', 'default', ...) will cause double-firing and unpredictable consent state."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Only turn this on if you have no CMP or if your CMP explicitly does not implement Consent Mode itself."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "GTM Kit will only set the default Consent Mode settings and you must update the settings yourself when the user has given consent. When this setting is on, GTM Kit also exposes window.gtmkit.consent.update() and the gtmkit:consent:updated window event for partner scripts."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "See an example of how consent is updated"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Activate GCM settings"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Choose this option if you would like to activate the default settings below"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Google Consent Mode Default Settings"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Ad Personalization"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Enables personalized advertising"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Ad Storage"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Enables storage, such as cookies, related to advertising"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Ad User Data"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Enables sending user data related to advertising to Google"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Analytics Storage"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Enables storage, such as cookies, related to analytics (for example, visit duration)"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Functionality Storage"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Enables storage that supports the functionality of the website or app such as language settings"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Personalization Storage"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Enables storage related to personalization such as video recommendations"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Security Storage"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Enables storage related to security such as authentication functionality, fraud prevention, and other user protection"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Advanced"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Redact Ads Data"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Redact advertising data"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Pass through URL parameters"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Pass through ad click, client ID, and session ID information in URLs"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Wait For Update"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Milliseconds to wait for a CMP to call gtag('consent', 'update', ...) before tags fire with default state. 500 ms is a safe baseline. Set to 0 to disable the wait."
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Region"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "e.g. DK, DE, US-CA"
+msgstr ""
+
+#: assets/admin/883.js:3
+msgid "Limit defaults to specific countries or regions (ISO codes, e.g. DK, DE-BY, US-CA). Leave empty to apply globally. Separate multiple codes with commas."
 msgstr ""
 
 #: assets/admin/958.js:1

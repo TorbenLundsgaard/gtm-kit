@@ -1,6 +1,6 @@
 *** GTM Kit ***
 
-Unreleased
+2026-05-06 - version 2.10.0
 * Add: New "CMP script attributes" section on the Consent settings page lets you toggle Cookiebot, Iubenda, and CookieYes script-blocking attributes with one click and add a custom attribute for any other CMP — no PHP filters required.
 * Add: Fresh installs auto-detect a known CMP plugin (Cookiebot, Iubenda, CookieYes) and pre-select the matching toggle so the right attribute is on from day one.
 * Changed: The Cookiebot script attribute (`data-cookieconsent="ignore"`) is now configurable via Settings → Consent → CMP script attributes. Existing installs keep the attribute on by default to preserve current behavior; turn it off explicitly if you do not use Cookiebot.
