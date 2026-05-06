@@ -59,6 +59,7 @@ final class Upgrade {
 			'2.4'   => 'v24_upgrade',
 			'2.7'   => 'v27_upgrade',
 			'2.8.0' => 'v280_upgrade',
+			'2.10'  => 'v210_upgrade',
 		];
 
 		$current_version = \get_option( 'gtmkit_version' );
@@ -242,5 +243,39 @@ final class Upgrade {
 		if ( $updated ) {
 			$this->options->set( $options, false, true );
 		}
+	}
+
+	/**
+	 * Upgrade routine for v2.10
+	 *
+	 * Seed the new `cmp_script_attributes` option for upgraders. Earlier
+	 * releases hardcoded `data-cookieconsent="ignore"` on every install,
+	 * so to preserve current behavior the Cookiebot toggle defaults true
+	 * here regardless of which CMP plugin is active. Users who do not
+	 * want the attribute can turn it off explicitly in Settings → Consent
+	 * → CMP script attributes. Skipped if the option is already stored
+	 * (already-migrated install or admin save before this routine ran).
+	 */
+	protected function v210_upgrade(): void {
+		$options = $this->options->get_all_raw();
+		if ( isset( $options['general']['cmp_script_attributes'] ) && is_array( $options['general']['cmp_script_attributes'] ) ) {
+			return;
+		}
+
+		$values = [
+			'general' => [
+				'cmp_script_attributes' => [
+					'cookiebot' => true,
+					'iubenda'   => false,
+					'cookieyes' => false,
+					'custom'    => [
+						'name'  => '',
+						'value' => '',
+					],
+				],
+			],
+		];
+
+		$this->options->set( $values, false, false );
 	}
 }
