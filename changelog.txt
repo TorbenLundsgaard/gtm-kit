@@ -1,5 +1,8 @@
 *** GTM Kit ***
 
+Unreleased
+* Add: New `gtmkit_consent_admin_badges` filter lets add-ons (e.g. Premium's WP Consent API integration) push status banners onto the Consent settings page so users see immediately when a higher-priority consent source has taken over.
+
 2026-05-06 - version 2.10.0
 * Add: New "CMP script attributes" section on the Consent settings page lets you toggle Cookiebot, Iubenda, and CookieYes script-blocking attributes with one click and add a custom attribute for any other CMP — no PHP filters required.
 * Add: Fresh installs auto-detect a known CMP plugin (Cookiebot, Iubenda, CookieYes) and pre-select the matching toggle so the right attribute is on from day one.
