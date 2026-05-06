@@ -5,6 +5,7 @@
 /bundled
 /node_modules
 /tests
+.DS_Store
 .babelrc
 .distignore
 .editorconfig
