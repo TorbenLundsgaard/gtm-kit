@@ -3,7 +3,7 @@ Contributors: tlamedia, torbenlundsgaard, gtmkit
 Donate link: https://github.com/tlamedia/gtm-kit
 Tags: google tag manager, gtm, woocommerce, analytics, ga4
 Tested up to: 7.0
-Stable tag: 2.10.0
+Stable tag: 2.10.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -96,7 +96,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= Unreleased =
+= 2.10.1 =
+
+Release date: 2026-05-07
+
+Tag-only follow-up to 2.10.0 — completes the consent admin-badge surface alongside the React renderer that already shipped in 2.10.0. See the [2.10 release post](https://gtmkit.com/gtm-kit-2-10/) for the broader context.
 
 #### New:
 * New `gtmkit_consent_admin_badges` filter lets add-ons (e.g. Premium's WP Consent API integration) push status banners onto the Consent settings page so users see immediately when a higher-priority consent source has taken over.
