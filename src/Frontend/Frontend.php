@@ -291,7 +291,8 @@ final class Frontend {
 		$script  = 'const gtmkit_dataLayer_content = ' . wp_json_encode( $datalayer_data ) . ";\n";
 		$script .= esc_attr( $this->datalayer_name ) . '.push( gtmkit_dataLayer_content );' . "\n";
 
-		$dependency = self::will_register_container( $this->options ) ? [ 'gtmkit-container' ] : [ 'gtmkit' ];
+		// Ask the script registry whether `gtmkit-container` was actually registered earlier in this request rather than re-evaluating the gate predicate, which can disagree with the earlier evaluation if a `gtmkit_container_active` filter callback was added between `register()` and `wp_enqueue_scripts`.
+		$dependency = wp_script_is( 'gtmkit-container', 'registered' ) ? [ 'gtmkit-container' ] : [ 'gtmkit' ];
 
 		wp_register_script( 'gtmkit-datalayer', '', $dependency, GTMKIT_VERSION, [ 'in_footer' => false ] );
 		wp_enqueue_script( 'gtmkit-datalayer' );
@@ -409,7 +410,7 @@ final class Frontend {
 
 		$script = esc_attr( $this->datalayer_name ) . '.push({"event" : "load_delayed_js"});' . "\n";
 
-		$dependency = self::will_register_container( $this->options ) ? [ 'gtmkit-container' ] : [ 'gtmkit' ];
+		$dependency = wp_script_is( 'gtmkit-container', 'registered' ) ? [ 'gtmkit-container' ] : [ 'gtmkit' ];
 
 		wp_register_script( 'gtmkit-delay', '', $dependency, GTMKIT_VERSION, [ 'in_footer' => true ] );
 		wp_enqueue_script( 'gtmkit-delay' );

@@ -1,5 +1,9 @@
 *** GTM Kit ***
 
+Unreleased
+* Fix: Silence the "translation loading triggered too early" notice that WordPress 6.7+ logs against the `gtm-kit` text domain by registering translations at the very start of `init` — before any other code can request a translated string.
+* Fix: Close an edge case where a script-dependency notice could still appear under WordPress 6.9.1+ when a consent or CMP plugin toggled the GTM Kit container active mid-request, by asking the WordPress script registry directly which scripts were actually registered instead of re-evaluating the container gate.
+
 2026-05-07 - version 2.10.1
 * Add: New `gtmkit_consent_admin_badges` filter lets add-ons (e.g. Premium's WP Consent API integration) push status banners onto the Consent settings page so users see immediately when a higher-priority consent source has taken over.
 

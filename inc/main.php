@@ -218,7 +218,8 @@ if ( ! wp_installing() ) {
 		}
 	);
 
-	add_action( 'init', 'TLA_Media\GTM_Kit\gtmkit_load_text_domain' );
+	// Priority 0 so the textdomain is loaded before any other init callback that might call __() against it (WP 6.7+ warns when JIT loading triggers before init).
+	add_action( 'init', 'TLA_Media\GTM_Kit\gtmkit_load_text_domain', 0 );
 	if ( is_admin() ) {
 		add_action( 'plugins_loaded', 'TLA_Media\GTM_Kit\gtmkit_admin_init' );
 	} elseif ( ! wp_doing_ajax() ) {
