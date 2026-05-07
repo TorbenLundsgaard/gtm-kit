@@ -96,6 +96,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= Unreleased =
+
+#### Bugfixes:
+* Silence the "translation loading triggered too early" notice that WordPress 6.7+ logs against the `gtm-kit` text domain by registering translations at the very start of `init` — before any other code can request a translated string.
+* Close an edge case where a script-dependency notice could still appear under WordPress 6.9.1+ when a consent or CMP plugin toggled the GTM Kit container active mid-request, by asking the WordPress script registry directly which scripts were actually registered instead of re-evaluating the container gate.
+
 = 2.10.1 =
 
 Release date: 2026-05-07

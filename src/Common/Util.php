@@ -7,7 +7,6 @@
 
 namespace TLA_Media\GTM_Kit\Common;
 
-use TLA_Media\GTM_Kit\Frontend\Frontend;
 use TLA_Media\GTM_Kit\Integration\WooCommerce;
 use TLA_Media\GTM_Kit\Options\Options;
 
@@ -360,7 +359,8 @@ final class Util {
 
 		$deps[] = 'gtmkit';
 
-		if ( Frontend::will_register_container( $this->options ) ) {
+		// Ask the script registry whether `gtmkit-container` was actually registered earlier in this request rather than re-evaluating the gate predicate, which can disagree with the earlier evaluation if a `gtmkit_container_active` filter callback was added between `register()` and `wp_enqueue_scripts`.
+		if ( \wp_script_is( 'gtmkit-container', 'registered' ) ) {
 			$deps[] = 'gtmkit-container';
 		}
 
