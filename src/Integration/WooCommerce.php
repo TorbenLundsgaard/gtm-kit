@@ -17,6 +17,7 @@ use Exception;
 use TLA_Media\GTM_Kit\Common\Conditionals\BricksConditional;
 use TLA_Media\GTM_Kit\Common\RestAPIServer;
 use TLA_Media\GTM_Kit\Common\Util;
+use TLA_Media\GTM_Kit\Integration\Tax\TaxResolver;
 use TLA_Media\GTM_Kit\Options\Options;
 use WC_Coupon;
 use WC_Customer;
@@ -44,6 +45,13 @@ final class WooCommerce extends AbstractEcommerce {
 	private $extend;
 
 	/**
+	 * Tax resolver. Canonical price/total path for the data layer.
+	 *
+	 * @var TaxResolver
+	 */
+	private TaxResolver $tax_resolver;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Options $options An instance of Options.
@@ -54,6 +62,8 @@ final class WooCommerce extends AbstractEcommerce {
 
 		// @phpstan-ignore-next-line
 		$this->extend = StoreApi::container()->get( ExtendSchema::class );
+
+		$this->tax_resolver = new TaxResolver( $options );
 
 		// Call parent constructor.
 		parent::__construct( $options, $util );
@@ -309,8 +319,9 @@ final class WooCommerce extends AbstractEcommerce {
 		}
 
 		if ( is_checkout() && ! is_order_received_page() ) {
+			$exclude_tax                                     = $this->tax_resolver->resolve_tax_mode();
 			$global_data['wc']['cart_items']                 = $this->get_cart_items( 'begin_checkout' );
-			$global_data['wc']['cart_value']                 = round( wc_prices_include_tax() ? ( WC()->cart->get_cart_contents_total() + WC()->cart->get_cart_contents_tax() ) : WC()->cart->get_cart_contents_total(), 2 );
+			$global_data['wc']['cart_value']                 = $this->tax_resolver->resolve_cart_total( WC()->cart, $exclude_tax );
 			$global_data['wc']['chosen_shipping_method']     = WC()->session->get( 'chosen_shipping_methods' )[0] ?? '';
 			$global_data['wc']['chosen_payment_method']      = $this->get_payment_method();
 			$global_data['wc']['add_payment_info']['fired']  = false;
@@ -449,11 +460,8 @@ final class WooCommerce extends AbstractEcommerce {
 	 */
 	public function get_datalayer_content_cart( array $data_layer ): array {
 
-		if ( wc_prices_include_tax() ) {
-			$cart_value = WC()->cart->get_cart_contents_total() + WC()->cart->get_cart_contents_tax();
-		} else {
-			$cart_value = WC()->cart->get_cart_contents_total();
-		}
+		$exclude_tax = $this->tax_resolver->resolve_tax_mode();
+		$cart_value  = $this->tax_resolver->resolve_cart_total( WC()->cart, $exclude_tax );
 
 		if ( $this->options->get( 'general', 'datalayer_page_type' ) ) {
 			$data_layer['pageType'] = 'cart';
@@ -462,7 +470,7 @@ final class WooCommerce extends AbstractEcommerce {
 		$data_layer['event']     = 'view_cart';
 		$data_layer['ecommerce'] = [
 			'currency' => $this->store_currency,
-			'value'    => round( $cart_value, 2 ),
+			'value'    => $cart_value,
 			'items'    => $this->get_cart_items( 'view_cart' ),
 		];
 
@@ -482,15 +490,12 @@ final class WooCommerce extends AbstractEcommerce {
 			$data_layer['pageType'] = 'checkout';
 		}
 
-		if ( wc_prices_include_tax() ) {
-			$cart_value = WC()->cart->get_cart_contents_total() + WC()->cart->get_cart_contents_tax();
-		} else {
-			$cart_value = WC()->cart->get_cart_contents_total();
-		}
+		$exclude_tax = $this->tax_resolver->resolve_tax_mode();
+		$cart_value  = $this->tax_resolver->resolve_cart_total( WC()->cart, $exclude_tax );
 
 		$data_layer['event']                 = 'begin_checkout';
 		$data_layer['ecommerce']['currency'] = $this->store_currency;
-		$data_layer['ecommerce']['value']    = round( $cart_value, 2 );
+		$data_layer['ecommerce']['value']    = $cart_value;
 
 		$coupons = WC()->cart->get_applied_coupons();
 		if ( $coupons ) {
@@ -556,11 +561,7 @@ final class WooCommerce extends AbstractEcommerce {
 			$data_layer['pageType'] = 'order-received';
 		}
 
-		if ( $this->options->get( 'integrations', 'woocommerce_exclude_tax' ) ) {
-			$order_value = $order->get_total() - $order->get_total_tax();
-		} else {
-			$order_value = $order->get_total();
-		}
+		$order_value = $this->tax_resolver->resolve_order_total( $order, $this->tax_resolver->resolve_tax_mode() );
 
 		$data_layer = $this->get_purchase_event( $order, $data_layer );
 
@@ -584,11 +585,8 @@ final class WooCommerce extends AbstractEcommerce {
 	 */
 	public function get_purchase_event( WC_Order $order, array $data_layer = [] ): array {
 
-		if ( $this->options->get( 'integrations', 'woocommerce_exclude_tax' ) ) {
-			$order_value = $order->get_total() - $order->get_total_tax();
-		} else {
-			$order_value = $order->get_total();
-		}
+		$exclude_tax = $this->tax_resolver->resolve_tax_mode();
+		$order_value = $this->tax_resolver->resolve_order_total( $order, $exclude_tax );
 
 		$shipping_total = (float) $order->get_shipping_total();
 		if ( $this->options->get( 'integrations', 'woocommerce_exclude_shipping' ) ) {
@@ -728,7 +726,7 @@ final class WooCommerce extends AbstractEcommerce {
 			'item_id'   => $this->prefix_item_id( $item_id ),
 			'item_name' => $product->get_title(),
 			'currency'  => $this->store_currency,
-			'price'     => round( (float) wc_get_price_to_display( $product ), 2 ),
+			'price'     => $this->tax_resolver->resolve_product_price( $product, $this->tax_resolver->resolve_tax_mode() ),
 		];
 
 		if ( $this->options->get( 'integrations', 'woocommerce_brand' ) ) {
@@ -1248,8 +1246,7 @@ final class WooCommerce extends AbstractEcommerce {
 
 				if ( $item instanceof WC_Order_Item_Product ) {
 					$product       = $item->get_product();
-					$inc_tax       = ( 'incl' === get_option( 'woocommerce_tax_display_shop' ) );
-					$product_price = round( $order->get_item_total( $item, $inc_tax ), 2 );
+					$product_price = $this->tax_resolver->resolve_order_item_price( $order, $item, $this->tax_resolver->resolve_tax_mode() );
 
 					$additional_item_attributes = [
 						'quantity' => $item->get_quantity(),

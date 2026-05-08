@@ -272,6 +272,10 @@ final class OptionSchema {
 				'type'     => 'boolean',
 				'constant' => 'GTMKIT_WC_DEBUG_TRACK_PURCHASE',
 			],
+			'woocommerce_exclude_tax'               => [
+				'default' => false,
+				'type'    => 'boolean',
+			],
 			'cf7_load_js'                           => [
 				'default' => 1,
 				'type'    => 'integer',

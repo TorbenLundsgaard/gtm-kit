@@ -55,6 +55,7 @@ final class OptionKeys {
 	public const INTEGRATIONS_WOOCOMMERCE_VARIABLE_PRODUCT_TRACKING = 'integrations.woocommerce_variable_product_tracking';
 	public const INTEGRATIONS_WOOCOMMERCE_VIEW_ITEM_LIST_LIMIT      = 'integrations.woocommerce_view_item_list_limit';
 	public const INTEGRATIONS_WOOCOMMERCE_DEBUG_TRACK_PURCHASE      = 'integrations.woocommerce_debug_track_purchase';
+	public const INTEGRATIONS_WOOCOMMERCE_EXCLUDE_TAX               = 'integrations.woocommerce_exclude_tax';
 	public const INTEGRATIONS_CF7_LOAD_JS                           = 'integrations.cf7_load_js';
 	public const INTEGRATIONS_CF7_INTEGRATION                       = 'integrations.cf7_integration';
 	public const INTEGRATIONS_EDD_DEBUG_TRACK_PURCHASE              = 'integrations.edd_debug_track_purchase';
