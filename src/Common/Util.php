@@ -156,9 +156,16 @@ final class Util {
 		$data['web_server']        = $this->get_web_server();
 		$data['php_version']       = $this->shorten_version( phpversion() );
 		$data['wordpress_version'] = $this->shorten_version( $wp_version );
-		$data['current_theme']     = ( wp_get_theme()->get( 'Template' ) ) ? ucwords( wp_get_theme()->get( 'Template' ) ) : \wp_get_theme()->get( 'Name' );
-		$data['active_plugins']    = $this->get_active_plugins();
-		$data['multisite']         = \is_multisite();
+		// `get_template()` returns the parent template's directory name for
+		// child themes and the theme's own stylesheet name otherwise, never
+		// empty and never translated, so it doesn't JIT-load the active
+		// theme's text domain. The previous `get( 'Template' ) ?: get( 'Name' )`
+		// fallback fired translation loading for parent themes (where the raw
+		// Template header is empty), which WP 6.7+ logs as `_doing_it_wrong`
+		// when called before `init`.
+		$data['current_theme']  = ucwords( wp_get_theme()->get_template() );
+		$data['active_plugins'] = $this->get_active_plugins();
+		$data['multisite']      = \is_multisite();
 
 		return $data;
 	}
@@ -195,7 +202,9 @@ final class Util {
 			],
 			5 => [
 				'label' => __( 'Current theme:', 'gtm-kit' ),
-				'value' => ( wp_get_theme()->get( 'Template' ) ) ? ucwords( wp_get_theme()->get( 'Template' ) ) : \wp_get_theme()->get( 'Name' ),
+				// See `set_site_data()` for why `get_template()` replaces the
+				// `get( 'Template' ) ?: get( 'Name' )` fallback.
+				'value' => ucwords( wp_get_theme()->get_template() ),
 				'tag'   => 'code',
 			],
 			6 => [
