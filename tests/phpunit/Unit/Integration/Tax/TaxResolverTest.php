@@ -2,11 +2,10 @@
 /**
  * Unit tests for {@see TaxResolver}.
  *
- * Pattern: BrainMonkey (via `yoast/wp-test-utils`) for WordPress and
- * WooCommerce function stubs, Mockery for cart/order/product objects.
+ * BrainMonkey (via `yoast/wp-test-utils`) for WordPress and WooCommerce
+ * function stubs; Mockery for cart/order/product objects.
  *
- * Coverage matrix (per Phase 1 acceptance criteria for the helper plus
- * the @andersbolander reproduction):
+ * Coverage:
  *
  *  - resolve_tax_mode() reads the option and applies the
  *    `gtmkit_resolve_tax_mode` filter.
@@ -16,6 +15,8 @@
  *    "Prices entered with tax" Woo setting.
  *  - resolve_order_total() and resolve_order_item_price() honour the
  *    toggle independent of `woocommerce_tax_display_shop`.
+ *  - resolve_item_discount() emits a per-unit coupon discount that uses
+ *    the same tax convention as the surrounding `price` field.
  *
  * @package TLA_Media\GTM_Kit
  */
@@ -272,8 +273,7 @@ final class TaxResolverTest extends TestCase {
 	}
 
 	/**
-	 * Negative inputs (refunds) round symmetrically. Phase 2 will use
-	 * the helper for refund payloads, so the contract must hold today.
+	 * Negative inputs (refunds) round symmetrically.
 	 *
 	 * @covers \TLA_Media\GTM_Kit\Integration\Tax\TaxResolver::resolve_order_total
 	 */
@@ -288,16 +288,15 @@ final class TaxResolverTest extends TestCase {
 	}
 
 	/**
-	 * Reproduction of the @andersbolander case
-	 * (https://wordpress.org/support/topic/ecommerce-datalayer-inconsistency/):
-	 * prices entered ex-tax (94.78), 15% VAT, displayed inc-tax (109),
-	 * `woocommerce_exclude_tax` toggle OFF. The data layer must emit
-	 * `value: 109` and `items[0].price: 109` consistently.
+	 * Mixed-config reproduction: prices entered ex-tax (94.78), 15% VAT,
+	 * displayed inc-tax (109), `woocommerce_exclude_tax` toggle OFF.
+	 * The data layer must emit `value: 109` and `items[0].price: 109`
+	 * consistently.
 	 *
 	 * @covers \TLA_Media\GTM_Kit\Integration\Tax\TaxResolver::resolve_product_price
 	 * @covers \TLA_Media\GTM_Kit\Integration\Tax\TaxResolver::resolve_cart_total
 	 */
-	public function test_andersbolander_reproduction(): void {
+	public function test_mixed_woo_config_with_toggle_off_reports_inc_tax(): void {
 		Functions\when( 'wc_get_price_including_tax' )->justReturn( 109.0 );
 		Functions\when( 'wc_get_price_excluding_tax' )->justReturn( 94.78 );
 
@@ -314,6 +313,94 @@ final class TaxResolverTest extends TestCase {
 		$this->assertSame( 109.0, $cart_value, 'value must be inc-tax with toggle OFF.' );
 		$this->assertSame( 109.0, $item_price, 'items[].price must be inc-tax with toggle OFF.' );
 		$this->assertSame( $cart_value, $item_price, 'sum(items[].price * qty) must equal value for one item at qty 1.' );
+	}
+
+	/**
+	 * Toggle ON: per-unit coupon discount excludes tax.
+	 *
+	 * Item: 2 × $50 ex-tax with a $10 ex-tax coupon discount on the line.
+	 * subtotal = 100, total = 90, subtotal_tax = 25, total_tax = 22.5.
+	 * Expected per-unit discount = (100 - 90) / 2 = 5.0 ex-tax.
+	 *
+	 * @covers \TLA_Media\GTM_Kit\Integration\Tax\TaxResolver::resolve_item_discount
+	 */
+	public function test_resolve_item_discount_ex_tax_when_toggle_on(): void {
+		Filters\expectApplied( 'gtmkit_resolve_item_discount' )->once()->andReturnFirstArg();
+
+		$resolver = $this->make_resolver( true );
+		$item     = [
+			'subtotal'     => 100.0,
+			'total'        => 90.0,
+			'subtotal_tax' => 25.0,
+			'total_tax'    => 22.5,
+			'quantity'     => 2,
+		];
+
+		$this->assertSame( 5.0, $resolver->resolve_item_discount( $item, true ) );
+	}
+
+	/**
+	 * Toggle OFF: per-unit coupon discount includes tax.
+	 *
+	 * Same item as above. Inc-tax line discount =
+	 * (100 - 90) + (25 - 22.5) = 12.5; per unit = 12.5 / 2 = 6.25.
+	 *
+	 * @covers \TLA_Media\GTM_Kit\Integration\Tax\TaxResolver::resolve_item_discount
+	 */
+	public function test_resolve_item_discount_inc_tax_when_toggle_off(): void {
+		Filters\expectApplied( 'gtmkit_resolve_item_discount' )->once()->andReturnFirstArg();
+
+		$resolver = $this->make_resolver( false );
+		$item     = [
+			'subtotal'     => 100.0,
+			'total'        => 90.0,
+			'subtotal_tax' => 25.0,
+			'total_tax'    => 22.5,
+			'quantity'     => 2,
+		];
+
+		$this->assertSame( 6.25, $resolver->resolve_item_discount( $item, false ) );
+	}
+
+	/**
+	 * Zero quantity: per-unit discount must be 0.0 (no division by zero).
+	 *
+	 * @covers \TLA_Media\GTM_Kit\Integration\Tax\TaxResolver::resolve_item_discount
+	 */
+	public function test_resolve_item_discount_zero_quantity_returns_zero(): void {
+		Filters\expectApplied( 'gtmkit_resolve_item_discount' )->once()->andReturnFirstArg();
+
+		$resolver = $this->make_resolver( true );
+		$item     = [
+			'subtotal'     => 100.0,
+			'total'        => 90.0,
+			'subtotal_tax' => 25.0,
+			'total_tax'    => 22.5,
+			'quantity'     => 0,
+		];
+
+		$this->assertSame( 0.0, $resolver->resolve_item_discount( $item, true ) );
+	}
+
+	/**
+	 * The `gtmkit_resolve_item_discount` filter wins over the computed
+	 * value, mirroring the `gtmkit_resolve_tax_mode` override pattern.
+	 *
+	 * @covers \TLA_Media\GTM_Kit\Integration\Tax\TaxResolver::resolve_item_discount
+	 */
+	public function test_resolve_item_discount_filter_overrides_value(): void {
+		Filters\expectApplied( 'gtmkit_resolve_item_discount' )->once()->andReturn( 99.99 );
+
+		$resolver = $this->make_resolver( true );
+		$item     = [
+			'subtotal'     => 100.0,
+			'total'        => 90.0,
+			'subtotal_tax' => 25.0,
+			'total_tax'    => 22.5,
+			'quantity'     => 2,
+		];
+
+		$this->assertSame( 99.99, $resolver->resolve_item_discount( $item, true ) );
 	}
 
 	/**
