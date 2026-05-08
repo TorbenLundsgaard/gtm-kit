@@ -27,6 +27,11 @@
 	<!-- Exclude the Bundles zip directory. -->
 	<exclude-pattern>/bundled/*</exclude-pattern>
 
+	<!-- Exclude manual test-driver scripts. They run via wp eval-file
+	     against a real site, not as plugin code, so the prefix-all-globals
+	     and one-object-per-file rules do not apply. -->
+	<exclude-pattern>/tests/manual/*</exclude-pattern>
+
 	<!-- Strip the file paths down to the relevant bit. -->
 	<arg name="basepath" value="."/>
 
