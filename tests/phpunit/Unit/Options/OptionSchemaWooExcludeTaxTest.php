@@ -2,9 +2,8 @@
 /**
  * Unit test for the `woocommerce_exclude_tax` schema entry.
  *
- * Phase 1 of the tax-handling-consistency refactor adds this option to
- * the integrations schema so a fresh install resolves to `false` rather
- * than `null`. This guards that contract.
+ * Guards that the option is registered in the integrations schema so a
+ * fresh install resolves to `false` rather than `null`.
  *
  * @package TLA_Media\GTM_Kit
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Manual end-to-end matrix for the tax-handling consistency Phase 1 fix.
+ * Manual end-to-end tax-handling matrix.
  *
  * Runs four cells against a real WC store. For each cell:
  *  1. Sets WC tax options + the gtmkit `woocommerce_exclude_tax` toggle.

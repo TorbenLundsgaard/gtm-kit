@@ -6,8 +6,7 @@
  * Pattern: boots WordPress via `yoast/wp-test-utils`, configures the
  * `gcm_*` option set, runs the enqueue method, and extracts the inline
  * script from the WP scripts registry to assert on the emitted consent
- * payload. Covers the three states most load-bearing for roadmap item
- * #49 Consent Mode v2 Defaults:
+ * payload. Covers the three load-bearing Consent Mode v2 default states:
  *
  *  1. Opt-out: `gcm_default_settings = 0` emits no consent block.
  *  2. Denied-by-default: all seven consent categories default to `denied`
