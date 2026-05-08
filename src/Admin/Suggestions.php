@@ -179,7 +179,10 @@ final class Suggestions {
 			}
 		}
 
-		if ( \wp_get_theme()->get( 'Name' ) === 'Woodmart' || wp_get_theme()->get( 'Template' ) === 'woodmart' ) {
+		// Match by directory name only. See BricksConditional::is_met() for why
+		// `get( 'Name' )` is avoided here.
+		$theme = \wp_get_theme();
+		if ( $theme->get_stylesheet() === 'woodmart' || $theme->get_template() === 'woodmart' ) {
 			$extensions['theme'] = 'woodmart';
 		}
 
