@@ -2,6 +2,7 @@
 Contributors: tlamedia, torbenlundsgaard, gtmkit
 Donate link: https://github.com/tlamedia/gtm-kit
 Tags: google tag manager, gtm, woocommerce, analytics, ga4
+Requires at least: 6.8
 Tested up to: 7.0
 Stable tag: 2.10.1
 License: GPLv3
@@ -114,6 +115,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * Heads up: stores running variable products with the "Exclude tax" toggle on may see variation `value` and `price` numbers move on the product page after this update. Stores using percentage coupons may see `discount` numbers move on cart and purchase events. If you compensated for the prior inconsistency in a downstream transformation (server-side GTM, BigQuery), remove the compensation.
 * Heads up: GA4 numbers may move after this update. Stores with prices entered ex-tax and tax-inclusive cart display will see `value` change from ex-tax to inc-tax in cart and checkout events. Stores that previously enabled "Exclude tax" expecting it to apply only to purchase will now also see cart and checkout events report ex-tax. Per-item `price` follows the same rule. If you compensated for the prior inconsistency in a downstream transformation (server-side GTM, BigQuery), remove the compensation.
 * New `gtmkit_resolve_item_discount` filter lets developers override the resolved per-item coupon discount in code, mirroring the `gtmkit_resolve_tax_mode` filter introduced in 2.10.
+* Minimum required WordPress version is now 6.8 (was 6.7). Sites still on WordPress 6.7 won't get this update via the dashboard until they upgrade WordPress.
 * New `gtmkit_resolve_tax_mode` filter lets developers override the "Exclude tax" toggle in code (per-event or per-context).
 
 = 2.10.1 =
