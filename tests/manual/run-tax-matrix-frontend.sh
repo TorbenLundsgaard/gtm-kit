@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the Phase 1 tax-handling matrix against the real frontend.
+# Run the tax-handling matrix against the real frontend.
 #
 # Mutates WC + GTM Kit settings via wp-cli, fetches the rendered
 # `view_cart` and `begin_checkout` pages with curl + a persistent cookie
@@ -141,7 +141,7 @@ OVERALL_PASS=true
 
 # Cell 1: control. Prices stored inc-tax, display incl, toggle OFF -> 16 (inc-tax).
 run_cell "cell-1 control      " yes incl false 16 16
-# Cell 2: @andersbolander. Prices stored ex-tax, display incl, toggle OFF -> 20 (inc-tax = 16 * 1.25).
+# Cell 2: prices stored ex-tax, display incl, toggle OFF -> 20 (inc-tax = 16 * 1.25).
 run_cell "cell-2 andersbolander" no  incl false 20 20
 # Cell 3: toggle ON. Prices stored ex-tax, display incl, toggle ON -> 16 (ex-tax stored value).
 run_cell "cell-3 toggle ON    " no  incl true  16 16

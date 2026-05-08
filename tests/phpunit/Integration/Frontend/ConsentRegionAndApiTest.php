@@ -1,7 +1,7 @@
 <?php
 /**
- * Integration tests for the Consent Mode v2 additions shipped with
- * roadmap #49 Consent Mode v2 Defaults and Admin UI.
+ * Integration tests for the Consent Mode v2 default-state and Admin UI
+ * additions.
  *
  * Covers:
  *  - The `gcm_region` option's effect on the emitted
