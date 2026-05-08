@@ -360,7 +360,13 @@ function gtmkitLoad() {
 				window.gtmkit_settings.wc.pid_prefix + productVariation.sku;
 		}
 
-		productVariationData.price = productVariation.display_price;
+		// gtmkit_price is injected server-side via the
+		// woocommerce_available_variation filter so the toggle wins over
+		// Woo's display setting; fall back to display_price for safety.
+		productVariationData.price =
+			'undefined' !== typeof productVariation.gtmkit_price
+				? productVariation.gtmkit_price
+				: productVariation.display_price;
 
 		const productAttributes = [];
 		for (const attribKey in productVariation.attributes) {

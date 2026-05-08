@@ -12,5 +12,6 @@
 
 require_once __DIR__ . '/wc-stubs/WC_Product.php';
 require_once __DIR__ . '/wc-stubs/WC_Cart.php';
+require_once __DIR__ . '/wc-stubs/WC_Abstract_Order.php';
 require_once __DIR__ . '/wc-stubs/WC_Order.php';
 require_once __DIR__ . '/wc-stubs/WC_Order_Item_Product.php';

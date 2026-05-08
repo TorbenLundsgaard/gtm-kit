@@ -14,8 +14,8 @@
 namespace TLA_Media\GTM_Kit\Integration\Tax;
 
 use TLA_Media\GTM_Kit\Options\Options;
+use WC_Abstract_Order;
 use WC_Cart;
-use WC_Order;
 use WC_Order_Item_Product;
 use WC_Product;
 
@@ -113,12 +113,16 @@ final class TaxResolver {
 	/**
 	 * Resolve an order total for the data layer.
 	 *
-	 * @param WC_Order $order       The order.
-	 * @param bool     $exclude_tax Tax mode resolved by {@see self::resolve_tax_mode()}.
+	 * Accepts {@see WC_Abstract_Order} so refunds (which extend it as a
+	 * sibling of {@see \WC_Order}) reuse the same helper. Negative inputs
+	 * round symmetrically.
+	 *
+	 * @param WC_Abstract_Order $order       The order or refund.
+	 * @param bool              $exclude_tax Tax mode resolved by {@see self::resolve_tax_mode()}.
 	 *
 	 * @return float Rounded to the store's currency precision.
 	 */
-	public function resolve_order_total( WC_Order $order, bool $exclude_tax ): float {
+	public function resolve_order_total( WC_Abstract_Order $order, bool $exclude_tax ): float {
 		$total = (float) $order->get_total();
 
 		if ( $exclude_tax ) {
@@ -131,20 +135,63 @@ final class TaxResolver {
 	/**
 	 * Resolve the per-item price for an order line item.
 	 *
-	 * Uses `WC_Order::get_item_total()` with the boolean toggle so the
-	 * returned price obeys `$exclude_tax` regardless of the
-	 * `woocommerce_tax_display_shop` setting.
+	 * Uses `WC_Abstract_Order::get_item_total()` with the boolean toggle
+	 * so the returned price obeys `$exclude_tax` regardless of the
+	 * `woocommerce_tax_display_shop` setting. Refund items are stored
+	 * negative and round sign-symmetrically.
 	 *
-	 * @param WC_Order              $order       The order.
+	 * @param WC_Abstract_Order     $order       The order or refund.
 	 * @param WC_Order_Item_Product $item        The order line item.
 	 * @param bool                  $exclude_tax Tax mode resolved by {@see self::resolve_tax_mode()}.
 	 *
 	 * @return float Rounded to the store's currency precision.
 	 */
-	public function resolve_order_item_price( WC_Order $order, WC_Order_Item_Product $item, bool $exclude_tax ): float {
+	public function resolve_order_item_price( WC_Abstract_Order $order, WC_Order_Item_Product $item, bool $exclude_tax ): float {
 		$inc_tax = ! $exclude_tax;
 
 		return $this->round( (float) $order->get_item_total( $item, $inc_tax ) );
+	}
+
+	/**
+	 * Resolve the per-unit coupon discount for an item.
+	 *
+	 * The cart-item / order-item array carries `subtotal` and `total` (both
+	 * net of tax) plus `subtotal_tax` and `total_tax`. When `$exclude_tax`
+	 * is false the helper folds the tax delta back in so the returned
+	 * discount uses the same tax convention as the surrounding `price`
+	 * field.
+	 *
+	 * @param array<string, mixed> $item        Cart- or order-item array.
+	 *                                          Required keys: `subtotal`,
+	 *                                          `total`, `subtotal_tax`,
+	 *                                          `total_tax`, `quantity`.
+	 * @param bool                 $exclude_tax Tax mode resolved by {@see self::resolve_tax_mode()}.
+	 *
+	 * @return float Per-unit discount, rounded to the store's currency precision.
+	 */
+	public function resolve_item_discount( array $item, bool $exclude_tax ): float {
+		$subtotal     = (float) ( $item['subtotal'] ?? 0 );
+		$total        = (float) ( $item['total'] ?? 0 );
+		$subtotal_tax = (float) ( $item['subtotal_tax'] ?? 0 );
+		$total_tax    = (float) ( $item['total_tax'] ?? 0 );
+		$quantity     = (int) ( $item['quantity'] ?? 0 );
+
+		$discount = $subtotal - $total;
+		if ( ! $exclude_tax ) {
+			$discount += $subtotal_tax - $total_tax;
+		}
+
+		$per_unit = ( $quantity > 0 ) ? $discount / $quantity : 0.0;
+
+		/**
+		 * Filter the resolved per-unit coupon discount.
+		 *
+		 * @param float                $discount    Per-unit discount,
+		 *                                          rounded to currency precision.
+		 * @param array<string, mixed> $item        Cart- or order-item array.
+		 * @param bool                 $exclude_tax Tax mode in effect.
+		 */
+		return (float) apply_filters( 'gtmkit_resolve_item_discount', $this->round( $per_unit ), $item, $exclude_tax );
 	}
 
 	/**

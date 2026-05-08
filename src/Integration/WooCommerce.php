@@ -126,6 +126,7 @@ final class WooCommerce extends AbstractEcommerce {
 		);
 		add_action( 'woocommerce_after_shop_loop_item', [ self::$instance, 'product_list_loop_add_to_cart_tracking' ] );
 		add_filter( 'woocommerce_cart_item_remove_link', [ self::$instance, 'cart_item_remove_link' ], 10, 2 );
+		add_filter( 'woocommerce_available_variation', [ self::$instance, 'add_variation_tax_resolved_price' ], 10, 3 );
 
 		// Set list name in WooCommerce loop.
 		add_filter( 'woocommerce_product_loop_start', [ self::$instance, 'set_list_name_on_category_and_tag' ] );
@@ -810,17 +811,10 @@ final class WooCommerce extends AbstractEcommerce {
 
 				if ( $included_products && $included_cats ) {
 					$coupon_codes[] = $coupon->get_code();
-					$discount       = $item['subtotal'] - $item['total'];
-
-					if ( wc_prices_include_tax() ) {
-						$discount = $discount + $item['subtotal_tax'] - $item['total_tax'];
-					}
-
-					if ( isset( $item['quantity'] ) && $item['quantity'] > 0 ) {
-						$discount = $discount / $item['quantity'];
-					} else {
-						$discount = 0;
-					}
+					$discount       = $this->tax_resolver->resolve_item_discount(
+						$item,
+						$this->tax_resolver->resolve_tax_mode()
+					);
 				}
 			}
 		}
@@ -829,6 +823,32 @@ final class WooCommerce extends AbstractEcommerce {
 			'coupon_codes' => $coupon_codes,
 			'discount'     => $discount,
 		];
+	}
+
+	/**
+	 * Inject the TaxResolver-resolved price into the variations data.
+	 *
+	 * WooCommerce ships `display_price` based on `woocommerce_tax_display_shop`.
+	 * The data layer follows the `integrations.woocommerce_exclude_tax`
+	 * toggle instead, so the JS variation handler reads `gtmkit_price`.
+	 *
+	 * @hook woocommerce_available_variation
+	 *
+	 * @param array<string, mixed> $variation_data Variation data passed to JS.
+	 * @param WC_Product           $product        The parent variable product.
+	 * @param WC_Product           $variation      The variation product object.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function add_variation_tax_resolved_price( array $variation_data, WC_Product $product, WC_Product $variation ): array {
+		unset( $product );
+
+		$variation_data['gtmkit_price'] = $this->tax_resolver->resolve_product_price(
+			$variation,
+			$this->tax_resolver->resolve_tax_mode()
+		);
+
+		return $variation_data;
 	}
 
 	/**
