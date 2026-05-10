@@ -61,6 +61,7 @@ class ComposerStaticInit12fa396dcd6fc263a33fd78c6d8551b8
         'TLA_Media\\GTM_Kit\\Integration\\AbstractIntegration' => __DIR__ . '/../..' . '/src/Integration/AbstractIntegration.php',
         'TLA_Media\\GTM_Kit\\Integration\\ContactForm7' => __DIR__ . '/../..' . '/src/Integration/ContactForm7.php',
         'TLA_Media\\GTM_Kit\\Integration\\EasyDigitalDownloads' => __DIR__ . '/../..' . '/src/Integration/EasyDigitalDownloads.php',
+        'TLA_Media\\GTM_Kit\\Integration\\Tax\\TaxResolver' => __DIR__ . '/../..' . '/src/Integration/Tax/TaxResolver.php',
         'TLA_Media\\GTM_Kit\\Integration\\WooCommerce' => __DIR__ . '/../..' . '/src/Integration/WooCommerce.php',
         'TLA_Media\\GTM_Kit\\Options\\OptionKeys' => __DIR__ . '/../..' . '/src/Options/OptionKeys.php',
         'TLA_Media\\GTM_Kit\\Options\\OptionSchema' => __DIR__ . '/../..' . '/src/Options/OptionSchema.php',

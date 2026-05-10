@@ -46,6 +46,7 @@ return array(
     'TLA_Media\\GTM_Kit\\Integration\\AbstractIntegration' => $baseDir . '/src/Integration/AbstractIntegration.php',
     'TLA_Media\\GTM_Kit\\Integration\\ContactForm7' => $baseDir . '/src/Integration/ContactForm7.php',
     'TLA_Media\\GTM_Kit\\Integration\\EasyDigitalDownloads' => $baseDir . '/src/Integration/EasyDigitalDownloads.php',
+    'TLA_Media\\GTM_Kit\\Integration\\Tax\\TaxResolver' => $baseDir . '/src/Integration/Tax/TaxResolver.php',
     'TLA_Media\\GTM_Kit\\Integration\\WooCommerce' => $baseDir . '/src/Integration/WooCommerce.php',
     'TLA_Media\\GTM_Kit\\Options\\OptionKeys' => $baseDir . '/src/Options/OptionKeys.php',
     'TLA_Media\\GTM_Kit\\Options\\OptionSchema' => $baseDir . '/src/Options/OptionSchema.php',
