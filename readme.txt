@@ -4,7 +4,7 @@ Donate link: https://github.com/tlamedia/gtm-kit
 Tags: google tag manager, gtm, woocommerce, analytics, ga4
 Requires at least: 6.8
 Tested up to: 7.0
-Stable tag: 2.10.1
+Stable tag: 2.11.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -97,26 +97,24 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= Unreleased =
+= 2.11.0 =
+
+Release date: 2026-05-11
+
+Find out about what's new in our [our release post](https://gtmkit.com/gtm-kit-2-11/).
 
 #### New:
-* "Exclude tax" toggle now controls variation product prices on the product page and the per-item coupon `discount` field, in addition to the cart, checkout, and purchase events covered in 2.10.x. A single switch now governs tax handling across the full e-commerce data layer GTM Kit emits.
-* "Exclude tax" toggle now controls `view_cart` and `begin_checkout` in addition to `purchase`. Previously the toggle only affected `purchase`; now a single switch governs tax handling across all three e-commerce events the data layer emits. (Affected support thread: [tax not excluded from revenue](https://wordpress.org/support/topic/tax-not-excluded-from-revenue/).)
+* "Exclude tax" toggle now controls every standard e-commerce event the data layer emits: `view_cart`, `begin_checkout`, `purchase`, variation prices on variable product pages (re-fired `view_item` + `add_to_cart`), and the per-item coupon `discount` field.
 
 #### Bugfixes:
-* Variation prices on the product page no longer use a different tax convention than the surrounding `value` and other `items[].price` fields. Selecting a variation now emits `view_item` and `add_to_cart` payloads that follow the "Exclude tax" toggle instead of WooCommerce's "Display prices in cart and checkout" setting.
-* Per-item coupon `discount` field no longer disagrees with the surrounding `price` field on tax convention. The `discount` field now follows the "Exclude tax" toggle the same way `price` does, so `price * quantity - discount` reconciles against the coupon-applied subtotal in every matrix cell.
-* Silence the "translation loading triggered too early" notice that WordPress 6.7+ logs against the `gtm-kit` text domain by registering translations at the very start of `init` — before any other code can request a translated string.
+* Cart, checkout, variation, and coupon-discount events now follow the "Exclude tax" toggle consistently across `value`, `price`, and `discount` fields. The GTM Kit Woo and GTM Kit Premium add-ons extend the fix to refund and order-paid events in their paired releases.
+* Silence the "translation loading triggered too early" notice that WordPress 6.7+ logs against the `gtm-kit` text domain by registering translations at the very start of `init` before any other code can request a translated string.
 * Close an edge case where a script-dependency notice could still appear under WordPress 6.9.1+ when a consent or CMP plugin toggled the GTM Kit container active mid-request, by asking the WordPress script registry directly which scripts were actually registered instead of re-evaluating the container gate.
-* WooCommerce cart and checkout data layer no longer reports `ecommerce.value` and `items[].price` on different tax conventions. Previously the two could disagree (for example `value` ex-tax while `items[0].price` inc-tax) when WooCommerce's "Prices entered with tax" and "Display prices in cart and checkout" settings differed. Both now follow the "Exclude tax" toggle. (Affected support thread: [e-commerce datalayer inconsistency](https://wordpress.org/support/topic/ecommerce-datalayer-inconsistency/).)
-* Silence the "translation loading triggered too early" notice that WordPress 6.7+ logs for the active theme's text domain when GTM Kit's site-info, Bricks-detection, or Woodmart-detection paths read the theme's display name. Theme detection now compares the directory slug (untranslated), so plugintests.com no longer flags the notice against parent themes such as Twenty Seventeen.
 
 #### Other:
-* Heads up: stores running variable products with the "Exclude tax" toggle on may see variation `value` and `price` numbers move on the product page after this update. Stores using percentage coupons may see `discount` numbers move on cart and purchase events. If you compensated for the prior inconsistency in a downstream transformation (server-side GTM, BigQuery), remove the compensation.
-* Heads up: GA4 numbers may move after this update. Stores with prices entered ex-tax and tax-inclusive cart display will see `value` change from ex-tax to inc-tax in cart and checkout events. Stores that previously enabled "Exclude tax" expecting it to apply only to purchase will now also see cart and checkout events report ex-tax. Per-item `price` follows the same rule. If you compensated for the prior inconsistency in a downstream transformation (server-side GTM, BigQuery), remove the compensation.
-* New `gtmkit_resolve_item_discount` filter lets developers override the resolved per-item coupon discount in code, mirroring the `gtmkit_resolve_tax_mode` filter introduced in 2.10.
+* Heads up: GA4 numbers may move after this update. Stores with prices entered ex-tax and tax-inclusive cart display will see `value` change from ex-tax to inc-tax in cart and checkout events.
+* New `gtmkit_resolve_tax_mode` and `gtmkit_resolve_item_discount` filters let developers override the toggle programmatically (per-event or per-context) and override the per-item coupon discount calculation.
 * Minimum required WordPress version is now 6.8 (was 6.7). Sites still on WordPress 6.7 won't get this update via the dashboard until they upgrade WordPress.
-* New `gtmkit_resolve_tax_mode` filter lets developers override the "Exclude tax" toggle in code (per-event or per-context).
 
 = 2.10.1 =
 

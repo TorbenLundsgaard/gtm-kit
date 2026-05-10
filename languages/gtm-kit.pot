@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: GTM Kit 2.10.1\n"
+"Project-Id-Version: GTM Kit 2.11.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gtm-kit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-07T08:46:47+00:00\n"
+"POT-Creation-Date: 2026-05-10T19:10:17+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: gtm-kit\n"
@@ -126,100 +126,100 @@ msgid "%1$sNote:%2$s This will only be applied if page type has been activated i
 msgstr ""
 
 #. translators: %1$s is the name of the plugin and %2$s is the name of the theme.
-#: src/Admin/Suggestions.php:301
+#: src/Admin/Suggestions.php:304
 msgid "It seems that you have installed the %1$s plugin and %1$s theme."
 msgstr ""
 
 #. translators: %1$s is the name of the plugin.
-#: src/Admin/Suggestions.php:308
+#: src/Admin/Suggestions.php:311
 msgid "It seems that you have installed the %1$s plugin."
 msgstr ""
 
 #. translators: %1$s is the name of the theme.
-#: src/Admin/Suggestions.php:315
+#: src/Admin/Suggestions.php:318
 msgid "It seems that you have installed the %1$s theme."
 msgstr ""
 
 #. translators: %1$s is a link with the text 'GTM Kit Woo Add-On'.
-#: src/Admin/Suggestions.php:325
+#: src/Admin/Suggestions.php:328
 msgid "With the %1$s, you can track the add_to_wishlist event and leverage server-side tracking for enhanced accuracy and deeper insights into customer behavior."
 msgstr ""
 
-#: src/Admin/Suggestions.php:332
+#: src/Admin/Suggestions.php:335
 msgid "Upgrade:"
 msgstr ""
 
-#: src/Admin/Suggestions.php:345
+#: src/Admin/Suggestions.php:348
 msgid "It appears that you are not currently using a supported SEO plugin. By installing either WordPress SEO or Rank Math, you can assign a primary category to each product. This primary category will then be used in the data layer if the product is associated with multiple categories."
 msgstr ""
 
-#: src/Admin/Suggestions.php:350
+#: src/Admin/Suggestions.php:353
 msgid "Plugin suggestion:"
 msgstr ""
 
 #. translators: %s is the name of the plugin.
-#: src/Admin/Suggestions.php:368
+#: src/Admin/Suggestions.php:371
 msgid "It seems that you have installed the Google Tag Manager plugin called %1$s. Running two different GTM plugins simultaneously can lead to unexpected results, significantly impact data accuracy, and slow down page speed. Please consider deactivating %2$s unless you have carefully considered and addressed the potential challenges."
 msgstr ""
 
-#: src/Admin/Suggestions.php:376
+#: src/Admin/Suggestions.php:379
 msgid "Possible Conflict:"
 msgstr ""
 
 #. translators: %1$s and %2$s are links with the text 'GTM Kit Woo Add-On' and 'Grandfathered Wishlist Functionality' respectively.
-#: src/Admin/Suggestions.php:397
+#: src/Admin/Suggestions.php:400
 msgid "Starting with GTM Kit version 2.0, the add_to_wishlist event is no longer supported in the free version of GTM Kit. To continue tracking the add_to_wishlist event, you must either purchase the %1$s or download the free %2$s plugin."
 msgstr ""
 
-#: src/Admin/Suggestions.php:405
+#: src/Admin/Suggestions.php:408
 msgid "Breaking change:"
 msgstr ""
 
-#: src/Admin/Suggestions.php:419
+#: src/Admin/Suggestions.php:422
 #: assets/admin/761.js:1
 #: assets/admin/837.js:1
 msgid "New releases of GTM Kit may contain important updates to comply with changes in Google Tag Manager or analytics in general. We recommend enabling automatic plugin updates for GTM Kit to ensure it is always up to date."
 msgstr ""
 
-#: src/Admin/Suggestions.php:423
-#: src/Admin/Suggestions.php:456
-#: src/Admin/Suggestions.php:490
+#: src/Admin/Suggestions.php:426
+#: src/Admin/Suggestions.php:459
+#: src/Admin/Suggestions.php:493
 msgid "Go to settings"
 msgstr ""
 
-#: src/Admin/Suggestions.php:429
+#: src/Admin/Suggestions.php:432
 msgid "Automatic Updates:"
 msgstr ""
 
-#: src/Admin/Suggestions.php:444
+#: src/Admin/Suggestions.php:447
 msgid "The Google Tag Manager container is not injected."
 msgstr ""
 
-#: src/Admin/Suggestions.php:447
+#: src/Admin/Suggestions.php:450
 msgid "The \"Inject Container Code\" option is not enabled."
 msgstr ""
 
-#: src/Admin/Suggestions.php:451
+#: src/Admin/Suggestions.php:454
 msgid "The \"GTM Container ID\" value is empty."
 msgstr ""
 
-#: src/Admin/Suggestions.php:462
+#: src/Admin/Suggestions.php:465
 msgid "GTM Container Injection:"
 msgstr ""
 
-#: src/Admin/Suggestions.php:478
+#: src/Admin/Suggestions.php:481
 msgid "Debug logging should not be active in production environments longer than necessary as it affects performance."
 msgstr ""
 
-#: src/Admin/Suggestions.php:481
+#: src/Admin/Suggestions.php:484
 msgid "The browser console log is active."
 msgstr ""
 
-#: src/Admin/Suggestions.php:485
+#: src/Admin/Suggestions.php:488
 msgid "The debug log for \"purchase\" events is active."
 msgstr ""
 
-#: src/Admin/Suggestions.php:496
+#: src/Admin/Suggestions.php:499
 msgid "Logging and debugging:"
 msgstr ""
 
@@ -243,116 +243,116 @@ msgstr ""
 msgid "Only authenticated users can access endpoint."
 msgstr ""
 
-#: src/Common/Util.php:178
+#: src/Common/Util.php:184
 msgid "Server type:"
 msgstr ""
 
-#: src/Common/Util.php:183
+#: src/Common/Util.php:189
 msgid "PHP version number:"
 msgstr ""
 
-#: src/Common/Util.php:188
+#: src/Common/Util.php:194
 msgid "WordPress version number:"
 msgstr ""
 
-#: src/Common/Util.php:193
+#: src/Common/Util.php:199
 msgid "WordPress multisite:"
 msgstr ""
 
-#: src/Common/Util.php:194
+#: src/Common/Util.php:200
 #: assets/admin/767.js:1
 #: assets/admin/923.js:1
 msgid "Yes"
 msgstr ""
 
-#: src/Common/Util.php:194
+#: src/Common/Util.php:200
 #: assets/admin/767.js:1
 #: assets/admin/923.js:1
 msgid "No"
 msgstr ""
 
-#: src/Common/Util.php:198
+#: src/Common/Util.php:204
 msgid "Current theme:"
 msgstr ""
 
-#: src/Common/Util.php:203
+#: src/Common/Util.php:211
 msgid "Current site language:"
 msgstr ""
 
-#: src/Common/Util.php:208
+#: src/Common/Util.php:216
 msgid "Active plugins:"
 msgstr ""
 
-#: src/Common/Util.php:209
+#: src/Common/Util.php:217
 msgid "Plugin name and version of all active plugins"
 msgstr ""
 
-#: src/Common/Util.php:213
+#: src/Common/Util.php:221
 msgid "Anonymized GTM Kit settings:"
 msgstr ""
 
-#: src/Common/Util.php:214
+#: src/Common/Util.php:222
 msgid "Which GTM Kit settings are active"
 msgstr ""
 
 #: src/Integration/EasyDigitalDownloads.php:104
-#: src/Integration/WooCommerce.php:264
+#: src/Integration/WooCommerce.php:275
 msgid "Payment method not found"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:255
+#: src/Integration/WooCommerce.php:266
 msgid "Handpicked Products"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:256
+#: src/Integration/WooCommerce.php:267
 msgid "Best Sellers"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:257
-#: src/Integration/WooCommerce.php:1004
+#: src/Integration/WooCommerce.php:268
+#: src/Integration/WooCommerce.php:1022
 msgid "Product Category"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:258
+#: src/Integration/WooCommerce.php:269
 msgid "New Products"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:259
+#: src/Integration/WooCommerce.php:270
 msgid "Products On Sale"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:260
+#: src/Integration/WooCommerce.php:271
 msgid "Products By Attribute"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:261
-#: src/Integration/WooCommerce.php:1006
+#: src/Integration/WooCommerce.php:272
+#: src/Integration/WooCommerce.php:1024
 msgid "Product Tag"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:262
+#: src/Integration/WooCommerce.php:273
 msgid "Top Rated Products"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:263
+#: src/Integration/WooCommerce.php:274
 msgid "Shipping tier not found"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:863
+#: src/Integration/WooCommerce.php:881
 msgid "Grouped Product"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:897
+#: src/Integration/WooCommerce.php:915
 msgid "Search Results"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:897
-#: src/Integration/WooCommerce.php:938
-#: src/Integration/WooCommerce.php:971
+#: src/Integration/WooCommerce.php:915
+#: src/Integration/WooCommerce.php:956
+#: src/Integration/WooCommerce.php:989
 msgid "General Product List"
 msgstr ""
 
-#: src/Integration/WooCommerce.php:1119
+#: src/Integration/WooCommerce.php:1137
 msgid "GTM Kit data."
 msgstr ""
 
